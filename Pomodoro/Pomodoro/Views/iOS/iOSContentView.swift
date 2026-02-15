@@ -15,7 +15,7 @@ struct iOSContentView: View {
             }
 
             NavigationStack {
-                HistoryListView()
+                HistoryListView(appSettings: appSettings)
             }
             .tabItem {
                 Label("履歴", systemImage: "clock.arrow.circlepath")

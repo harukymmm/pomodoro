@@ -77,9 +77,12 @@ struct SettingsView: View {
 
             // MARK: - Cycle
             Section("サイクル") {
-                Stepper("セット数: \(appSettings.setsPerCycle)",
+                Stepper("大休憩までのセット数: \(appSettings.setsPerCycle)",
                         value: $appSettings.setsPerCycle,
                         in: 1...8)
+                Stepper("1日の目標セット数: \(appSettings.dailyTargetSets)",
+                        value: $appSettings.dailyTargetSets,
+                        in: 1...20)
             }
 
             // MARK: - Auto Start

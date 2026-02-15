@@ -3,6 +3,8 @@ import SwiftData
 
 #if os(macOS)
 struct MenuBarHistoryView: View {
+    var appSettings: AppSettings
+
     @Query(
         filter: #Predicate<PomodoroSession> { $0.phaseRawValue == "work" },
         sort: \PomodoroSession.startedAt,
@@ -10,13 +12,9 @@ struct MenuBarHistoryView: View {
     )
     private var sessions: [PomodoroSession]
 
-    private var filteredSessions: [PomodoroSession] {
-        sessions.filter { ($0.actualDurationSeconds ?? 0) >= 60 }
-    }
-
     private var groupedByDay: [(date: Date, totalMinutes: Int, sessions: [PomodoroSession])] {
         let calendar = Calendar.current
-        let grouped = Dictionary(grouping: filteredSessions) { session in
+        let grouped = Dictionary(grouping: sessions) { session in
             calendar.startOfDay(for: session.startedAt)
         }
         return grouped
@@ -28,7 +26,7 @@ struct MenuBarHistoryView: View {
     }
 
     var body: some View {
-        if filteredSessions.isEmpty {
+        if sessions.isEmpty {
             Text("履歴がありません")
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, minHeight: 100)
@@ -40,8 +38,14 @@ struct MenuBarHistoryView: View {
                             Text(day.date.formatted(date: .abbreviated, time: .omitted))
                                 .font(.caption.bold())
                             Spacer()
-                            Text("合計 \(day.totalMinutes)分")
-                                .font(.caption)
+                            let completedSets = day.sessions.filter(\.isCompleted).count
+                            if Calendar.current.isDateInToday(day.date) {
+                                Text("合計 \(day.totalMinutes)分 (\(completedSets)/\(appSettings.dailyTargetSets)セット)")
+                                    .font(.caption)
+                            } else {
+                                Text("合計 \(day.totalMinutes)分 (\(completedSets)セット)")
+                                    .font(.caption)
+                            }
                         }
                         .foregroundStyle(.secondary)
                         .padding(.horizontal)

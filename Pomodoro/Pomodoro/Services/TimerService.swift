@@ -11,7 +11,15 @@ final class TimerService {
     private(set) var currentPhase: TimerPhase = .work
     private(set) var remainingSeconds: Int = TimerPhase.work.defaultDurationSeconds
     private(set) var completedWorkSets: Int = 0
+    private(set) var todayCompletedSets: Int = 0
     var sessionTitle: String = ""
+
+    // MARK: - Overtime State
+
+    private(set) var isInOvertime: Bool = false
+    private(set) var overtimeSeconds: Int = 0
+    var showOvertimeChoice: Bool = false
+    var overtimeMinutes: Int { overtimeSeconds / 60 }
 
     // MARK: - Computed
 
@@ -20,11 +28,17 @@ final class TimerService {
     }
 
     var progress: Double {
+        if isInOvertime { return 1.0 }
         guard totalSeconds > 0 else { return 0 }
         return 1.0 - Double(remainingSeconds) / Double(totalSeconds)
     }
 
     var displayTime: String {
+        if isInOvertime {
+            let m = overtimeSeconds / 60
+            let s = overtimeSeconds % 60
+            return String(format: "+%d:%02d", m, s)
+        }
         let m = remainingSeconds / 60
         let s = remainingSeconds % 60
         return String(format: "%d:%02d", m, s)
@@ -34,6 +48,11 @@ final class TimerService {
         switch state {
         case .idle: return "🍅"
         case .running, .paused:
+            if isInOvertime {
+                let m = overtimeSeconds / 60
+                let s = overtimeSeconds % 60
+                return String(format: "+%02d:%02d", m, s)
+            }
             let m = remainingSeconds / 60
             let s = remainingSeconds % 60
             return String(format: "%02d:%02d", m, s)
@@ -45,6 +64,11 @@ final class TimerService {
         let sets = appSettings?.setsPerCycle ?? 4
         let current = min(completedWorkSets + (currentPhase == .work ? 1 : 0), sets)
         return "セット \(current)/\(sets)"
+    }
+
+    var dailySetDisplay: String {
+        let target = appSettings?.dailyTargetSets ?? 8
+        return "本日 \(todayCompletedSets)/\(target) セット"
     }
 
     var canStart: Bool { state == .idle || state == .completed }
@@ -80,6 +104,7 @@ final class TimerService {
         phaseStartDate = Date()
         accumulatedPauseSeconds = 0
         pauseStartDate = nil
+        resetOvertimeState()
 
         if currentPhase == .work {
             let session = PomodoroSession(
@@ -117,13 +142,18 @@ final class TimerService {
 
     func reset() {
         let elapsed = elapsedSeconds()
-        if let session = currentSession, elapsed > 0 {
-            session.cancel(elapsedSeconds: elapsed)
+        if let session = currentSession {
+            if elapsed < 60 && !isInOvertime {
+                modelContext?.delete(session)
+            } else {
+                session.cancel(elapsedSeconds: elapsed)
+            }
             try? modelContext?.save()
         }
 
         timerCancellable?.cancel()
         cancelScheduledNotification()
+        resetOvertimeState()
         state = .idle
         currentPhase = .work
         remainingSeconds = appSettings?.durationSeconds(for: .work) ?? TimerPhase.work.defaultDurationSeconds
@@ -139,13 +169,18 @@ final class TimerService {
         let elapsed = elapsedSeconds()
 
         if currentPhase == .work, let session = currentSession {
-            session.cancel(elapsedSeconds: elapsed)
+            if elapsed < 60 && !isInOvertime {
+                modelContext?.delete(session)
+            } else {
+                session.cancel(elapsedSeconds: elapsed)
+            }
             try? modelContext?.save()
             currentSession = nil
         }
 
         timerCancellable?.cancel()
         cancelScheduledNotification()
+        resetOvertimeState()
         advancePhase()
     }
 
@@ -166,7 +201,20 @@ final class TimerService {
         remainingSeconds = newRemaining
 
         if newRemaining <= 0 {
-            completePhase()
+            if currentPhase == .work {
+                // Work phase: enter overtime instead of completing
+                if !isInOvertime {
+                    isInOvertime = true
+                    notificationService?.sendPhaseCompleteNotification(phase: currentPhase)
+                    #if os(iOS)
+                    HapticHelper.phaseComplete()
+                    #endif
+                }
+                overtimeSeconds = Int(elapsed) - totalSeconds
+            } else {
+                // Break phase: complete immediately as before
+                completePhase()
+            }
         }
     }
 
@@ -185,13 +233,16 @@ final class TimerService {
         timerCancellable?.cancel()
         remainingSeconds = 0
 
-        notificationService?.sendPhaseCompleteNotification(phase: currentPhase)
-        #if os(iOS)
-        HapticHelper.phaseComplete()
-        #endif
+        if !isInOvertime {
+            notificationService?.sendPhaseCompleteNotification(phase: currentPhase)
+            #if os(iOS)
+            HapticHelper.phaseComplete()
+            #endif
+        }
 
         if currentPhase == .work {
             completedWorkSets += 1
+            todayCompletedSets += 1
             if let session = currentSession {
                 session.complete(actualSeconds: totalSeconds)
                 try? modelContext?.save()
@@ -199,6 +250,7 @@ final class TimerService {
             }
         }
 
+        resetOvertimeState()
         advancePhase()
     }
 
@@ -239,9 +291,46 @@ final class TimerService {
         }
     }
 
+    // MARK: - Overtime
+
+    func finishOvertime() {
+        timerCancellable?.cancel()
+        if overtimeMinutes < 1 {
+            recordSession(includeOvertime: false)
+        } else {
+            showOvertimeChoice = true
+        }
+    }
+
+    func confirmOvertimeChoice(includeOvertime: Bool) {
+        recordSession(includeOvertime: includeOvertime)
+    }
+
+    private func recordSession(includeOvertime: Bool) {
+        completedWorkSets += 1
+        todayCompletedSets += 1
+        if let session = currentSession {
+            let actualSeconds = includeOvertime
+                ? totalSeconds + (overtimeMinutes * 60)
+                : totalSeconds
+            session.complete(actualSeconds: actualSeconds)
+            try? modelContext?.save()
+            currentSession = nil
+        }
+        resetOvertimeState()
+        advancePhase()
+    }
+
+    private func resetOvertimeState() {
+        isInOvertime = false
+        overtimeSeconds = 0
+        showOvertimeChoice = false
+    }
+
     // MARK: - Notifications
 
     private func scheduleNotification() {
+        guard !isInOvertime else { return }
         let seconds = TimeInterval(remainingSeconds)
         notificationService?.scheduleTimerEnd(phase: currentPhase, afterSeconds: seconds)
     }

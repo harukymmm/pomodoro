@@ -8,15 +8,22 @@ struct TimerView: View {
     let state: TimerState
     let completedWorkSets: Int
     var timerFont: TimerFont = .systemRounded
+    var isInOvertime: Bool = false
+    var overtimeSeconds: Int = 0
 
     @State private var pulseScale: CGFloat = 1.0
 
     private let ringWidth: CGFloat = 10
 
-    private var accent: Color { FuturisticTheme.accentColor(for: phase) }
-    private var trimEnd: CGFloat { CGFloat(1.0 - progress) }
+    private var accent: Color { isInOvertime ? .orange : FuturisticTheme.accentColor(for: phase) }
+    private var trimEnd: CGFloat { isInOvertime ? 1.0 : CGFloat(1.0 - progress) }
 
     private var displayTime: String {
+        if isInOvertime {
+            let m = overtimeSeconds / 60
+            let s = overtimeSeconds % 60
+            return String(format: "+%d:%02d", m, s)
+        }
         let m = remainingSeconds / 60
         let s = remainingSeconds % 60
         return String(format: "%d:%02d", m, s)
@@ -58,6 +65,12 @@ struct TimerView: View {
                     .foregroundStyle(accent.opacity(0.7))
                     .textCase(.uppercase)
                     .kerning(1.5)
+
+                if isInOvertime {
+                    Text("延長中")
+                        .font(timerFont.font(size: 11, weight: .semibold))
+                        .foregroundStyle(.orange)
+                }
             }
         }
         .padding(8)

@@ -39,6 +39,14 @@ final class AppSettings {
         }
     }
 
+    var dailyTargetSets: Int {
+        didSet {
+            let clamped = min(max(dailyTargetSets, 1), 20)
+            if dailyTargetSets != clamped { dailyTargetSets = clamped }
+            UserDefaults.standard.set(dailyTargetSets, forKey: "dailyTargetSets")
+        }
+    }
+
     var autoStartBreaks: Bool {
         didSet { UserDefaults.standard.set(autoStartBreaks, forKey: "autoStartBreaks") }
     }
@@ -90,6 +98,12 @@ final class AppSettings {
             self.setsPerCycle = defaults.integer(forKey: "setsPerCycle")
         } else {
             self.setsPerCycle = 4
+        }
+
+        if defaults.object(forKey: "dailyTargetSets") != nil {
+            self.dailyTargetSets = defaults.integer(forKey: "dailyTargetSets")
+        } else {
+            self.dailyTargetSets = 8
         }
 
         self.autoStartBreaks = defaults.bool(forKey: "autoStartBreaks")

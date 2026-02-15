@@ -2,6 +2,8 @@ import SwiftUI
 import SwiftData
 
 struct HistoryListView: View {
+    var appSettings: AppSettings
+
     @Query(
         filter: #Predicate<PomodoroSession> { $0.phaseRawValue == "work" },
         sort: \PomodoroSession.startedAt,
@@ -9,13 +11,9 @@ struct HistoryListView: View {
     )
     private var sessions: [PomodoroSession]
 
-    private var filteredSessions: [PomodoroSession] {
-        sessions.filter { ($0.actualDurationSeconds ?? 0) >= 60 }
-    }
-
     private var groupedByDay: [(date: Date, totalMinutes: Int, sessions: [PomodoroSession])] {
         let calendar = Calendar.current
-        let grouped = Dictionary(grouping: filteredSessions) { session in
+        let grouped = Dictionary(grouping: sessions) { session in
             calendar.startOfDay(for: session.startedAt)
         }
         return grouped
@@ -28,7 +26,7 @@ struct HistoryListView: View {
 
     var body: some View {
         Group {
-            if filteredSessions.isEmpty {
+            if sessions.isEmpty {
                 ContentUnavailableView(
                     "履歴がありません",
                     systemImage: "clock",
@@ -45,7 +43,12 @@ struct HistoryListView: View {
                             HStack {
                                 Text(day.date.formatted(date: .abbreviated, time: .omitted))
                                 Spacer()
-                                Text("合計 \(day.totalMinutes)分")
+                                let completedSets = day.sessions.filter(\.isCompleted).count
+                                if Calendar.current.isDateInToday(day.date) {
+                                    Text("合計 \(day.totalMinutes)分 (\(completedSets)/\(appSettings.dailyTargetSets)セット)")
+                                } else {
+                                    Text("合計 \(day.totalMinutes)分 (\(completedSets)セット)")
+                                }
                             }
                         }
                     }
