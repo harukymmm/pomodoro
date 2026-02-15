@@ -7,9 +7,9 @@ enum FuturisticTheme {
 
     static func accentColor(for phase: TimerPhase) -> Color {
         switch phase {
-        case .work: Color(red: 0.9, green: 0.2, blue: 0.3)
+        case .work: Color(red: 0.2, green: 0.45, blue: 0.9)
         case .shortBreak: Color(red: 0.0, green: 0.75, blue: 0.55)
-        case .longBreak: Color(red: 0.2, green: 0.45, blue: 0.9)
+        case .longBreak: Color(red: 0.55, green: 0.4, blue: 0.9)
         }
     }
 

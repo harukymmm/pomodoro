@@ -3,6 +3,7 @@ import SwiftUI
 #if os(iOS)
 struct iOSTimerTab: View {
     @Bindable var timerService: TimerService
+    var appSettings: AppSettings
 
     var body: some View {
         VStack(spacing: 24) {
@@ -21,7 +22,8 @@ struct iOSTimerTab: View {
                 progress: timerService.progress,
                 phase: timerService.currentPhase,
                 state: timerService.state,
-                completedWorkSets: timerService.completedWorkSets
+                completedWorkSets: timerService.completedWorkSets,
+                timerFont: appSettings.timerFont
             )
             .frame(width: 250, height: 250)
 

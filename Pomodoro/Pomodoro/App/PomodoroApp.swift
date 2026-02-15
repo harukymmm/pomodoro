@@ -4,6 +4,7 @@ import SwiftData
 @main
 struct PomodoroApp: App {
     @State private var timerService = TimerService()
+    @State private var appSettings = AppSettings()
     private let notificationService = NotificationService()
 
     var sharedModelContainer: ModelContainer = {
@@ -19,7 +20,7 @@ struct PomodoroApp: App {
     var body: some Scene {
         #if os(macOS)
         MenuBarExtra {
-            MenuBarTimerView(timerService: timerService)
+            MenuBarTimerView(timerService: timerService, appSettings: appSettings)
                 .modelContainer(sharedModelContainer)
                 .onAppear {
                     setupServices()
@@ -32,7 +33,7 @@ struct PomodoroApp: App {
 
         #if os(iOS)
         WindowGroup {
-            iOSContentView(timerService: timerService)
+            iOSContentView(timerService: timerService, appSettings: appSettings)
                 .modelContainer(sharedModelContainer)
                 .onAppear {
                     setupServices()
@@ -43,7 +44,7 @@ struct PomodoroApp: App {
 
     private func setupServices() {
         let context = sharedModelContainer.mainContext
-        timerService.configure(modelContext: context, notificationService: notificationService)
+        timerService.configure(modelContext: context, notificationService: notificationService, appSettings: appSettings)
         notificationService.requestPermission()
     }
 }

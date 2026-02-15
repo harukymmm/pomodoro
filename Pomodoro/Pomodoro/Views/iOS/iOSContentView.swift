@@ -3,11 +3,12 @@ import SwiftUI
 #if os(iOS)
 struct iOSContentView: View {
     var timerService: TimerService
+    var appSettings: AppSettings
 
     var body: some View {
         TabView {
             NavigationStack {
-                iOSTimerTab(timerService: timerService)
+                iOSTimerTab(timerService: timerService, appSettings: appSettings)
             }
             .tabItem {
                 Label("タイマー", systemImage: "timer")
@@ -25,6 +26,13 @@ struct iOSContentView: View {
             }
             .tabItem {
                 Label("統計", systemImage: "chart.bar")
+            }
+
+            NavigationStack {
+                SettingsView(appSettings: appSettings)
+            }
+            .tabItem {
+                Label("設定", systemImage: "gearshape")
             }
         }
     }

@@ -26,6 +26,10 @@
 		A10001010000000000000011 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001A /* Assets.xcassets */; };
 		A10001010000000000000012 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001B /* Theme.swift */; };
 		A10001010000000000000013 /* MenuBarHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001C /* MenuBarHistoryView.swift */; };
+		A10001010000000000000014 /* TimerFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001D /* TimerFont.swift */; };
+		A10001010000000000000015 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001E /* AppSettings.swift */; };
+		A10001010000000000000016 /* FontSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001F /* FontSelectionView.swift */; };
+		A10001010000000000000017 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000020 /* SettingsView.swift */; };
 		A10001020000000000000001 /* PomodoroApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000000A /* PomodoroApp.swift */; };
 		A10001020000000000000002 /* TimerPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000000B /* TimerPhase.swift */; };
 		A10001020000000000000003 /* TimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000000C /* TimerState.swift */; };
@@ -45,6 +49,10 @@
 		A10001020000000000000011 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001A /* Assets.xcassets */; };
 		A10001020000000000000012 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001B /* Theme.swift */; };
 		A10001020000000000000013 /* MenuBarHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001C /* MenuBarHistoryView.swift */; };
+		A10001020000000000000014 /* TimerFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001D /* TimerFont.swift */; };
+		A10001020000000000000015 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001E /* AppSettings.swift */; };
+		A10001020000000000000016 /* FontSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001F /* FontSelectionView.swift */; };
+		A10001020000000000000017 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000020 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +77,10 @@
 		A1000201000000000000001A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1000201000000000000001B /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		A1000201000000000000001C /* MenuBarHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarHistoryView.swift; sourceTree = "<group>"; };
+		A1000201000000000000001D /* TimerFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerFont.swift; sourceTree = "<group>"; };
+		A1000201000000000000001E /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		A1000201000000000000001F /* FontSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSelectionView.swift; sourceTree = "<group>"; };
+		A10002010000000000000020 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +144,7 @@
 				A1000201000000000000000B /* TimerPhase.swift */,
 				A1000201000000000000000C /* TimerState.swift */,
 				A1000201000000000000000D /* PomodoroSession.swift */,
+				A1000201000000000000001D /* TimerFont.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -142,6 +155,7 @@
 				A1000201000000000000000E /* TimerService.swift */,
 				A1000201000000000000000F /* NotificationService.swift */,
 				A10002010000000000000010 /* StatisticsService.swift */,
+				A1000201000000000000001E /* AppSettings.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -166,6 +180,8 @@
 				A10002010000000000000015 /* SessionRowView.swift */,
 				A10002010000000000000016 /* StatisticsView.swift */,
 				A1000201000000000000001B /* Theme.swift */,
+				A1000201000000000000001F /* FontSelectionView.swift */,
+				A10002010000000000000020 /* SettingsView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -312,6 +328,10 @@
 				A10001010000000000000010 /* iOSTimerTab.swift in Sources */,
 				A10001010000000000000012 /* Theme.swift in Sources */,
 				A10001010000000000000013 /* MenuBarHistoryView.swift in Sources */,
+				A10001010000000000000014 /* TimerFont.swift in Sources */,
+				A10001010000000000000015 /* AppSettings.swift in Sources */,
+				A10001010000000000000016 /* FontSelectionView.swift in Sources */,
+				A10001010000000000000017 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,6 +357,10 @@
 				A10001020000000000000010 /* iOSTimerTab.swift in Sources */,
 				A10001020000000000000012 /* Theme.swift in Sources */,
 				A10001020000000000000013 /* MenuBarHistoryView.swift in Sources */,
+				A10001020000000000000014 /* TimerFont.swift in Sources */,
+				A10001020000000000000015 /* AppSettings.swift in Sources */,
+				A10001020000000000000016 /* FontSelectionView.swift in Sources */,
+				A10001020000000000000017 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

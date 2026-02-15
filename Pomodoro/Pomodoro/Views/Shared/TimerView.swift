@@ -7,6 +7,7 @@ struct TimerView: View {
     let phase: TimerPhase
     let state: TimerState
     let completedWorkSets: Int
+    var timerFont: TimerFont = .systemRounded
 
     @State private var pulseScale: CGFloat = 1.0
 
@@ -46,14 +47,14 @@ struct TimerView: View {
             // 数字表示
             VStack(spacing: 2) {
                 Text(displayTime)
-                    .font(.system(size: 44, weight: .medium, design: .rounded))
+                    .font(timerFont.font(size: 44, weight: .medium))
                     .monospacedDigit()
                     .kerning(2)
                     .foregroundStyle(FuturisticTheme.textPrimary)
                     .contentTransition(.numericText())
 
                 Text(phase.displayName)
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .font(timerFont.font(size: 12, weight: .medium))
                     .foregroundStyle(accent.opacity(0.7))
                     .textCase(.uppercase)
                     .kerning(1.5)

@@ -65,7 +65,7 @@ struct StatisticsView: View {
                     x: .value("日付", stat.date, unit: .day),
                     y: .value("分", stat.totalMinutes)
                 )
-                .foregroundStyle(.red.gradient)
+                .foregroundStyle(.blue.gradient)
                 .cornerRadius(4)
             }
             .chartXAxis {

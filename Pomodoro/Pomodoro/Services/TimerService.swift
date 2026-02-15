@@ -13,11 +13,11 @@ final class TimerService {
     private(set) var completedWorkSets: Int = 0
     var sessionTitle: String = ""
 
-    static let setsPerCycle = 4
-
     // MARK: - Computed
 
-    var totalSeconds: Int { currentPhase.defaultDurationSeconds }
+    var totalSeconds: Int {
+        appSettings?.durationSeconds(for: currentPhase) ?? currentPhase.defaultDurationSeconds
+    }
 
     var progress: Double {
         guard totalSeconds > 0 else { return 0 }
@@ -42,8 +42,9 @@ final class TimerService {
     }
 
     var currentSetDisplay: String {
-        let current = min(completedWorkSets + (currentPhase == .work ? 1 : 0), Self.setsPerCycle)
-        return "セット \(current)/\(Self.setsPerCycle)"
+        let sets = appSettings?.setsPerCycle ?? 4
+        let current = min(completedWorkSets + (currentPhase == .work ? 1 : 0), sets)
+        return "セット \(current)/\(sets)"
     }
 
     var canStart: Bool { state == .idle || state == .completed }
@@ -59,20 +60,23 @@ final class TimerService {
     private var modelContext: ModelContext?
     private var currentSession: PomodoroSession?
     private var notificationService: NotificationService?
+    private var appSettings: AppSettings?
 
     // MARK: - Setup
 
-    func configure(modelContext: ModelContext, notificationService: NotificationService) {
+    func configure(modelContext: ModelContext, notificationService: NotificationService, appSettings: AppSettings) {
         self.modelContext = modelContext
         self.notificationService = notificationService
+        self.appSettings = appSettings
     }
 
     // MARK: - Actions
 
     func start() {
         guard canStart else { return }
+        let duration = totalSeconds
         state = .running
-        remainingSeconds = currentPhase.defaultDurationSeconds
+        remainingSeconds = duration
         phaseStartDate = Date()
         accumulatedPauseSeconds = 0
         pauseStartDate = nil
@@ -81,7 +85,7 @@ final class TimerService {
             let session = PomodoroSession(
                 title: sessionTitle.isEmpty ? "無題の作業" : sessionTitle,
                 phase: currentPhase,
-                durationSeconds: currentPhase.defaultDurationSeconds
+                durationSeconds: duration
             )
             modelContext?.insert(session)
             try? modelContext?.save()
@@ -122,7 +126,7 @@ final class TimerService {
         cancelScheduledNotification()
         state = .idle
         currentPhase = .work
-        remainingSeconds = TimerPhase.work.defaultDurationSeconds
+        remainingSeconds = appSettings?.durationSeconds(for: .work) ?? TimerPhase.work.defaultDurationSeconds
         completedWorkSets = 0
         phaseStartDate = nil
         accumulatedPauseSeconds = 0
@@ -199,9 +203,12 @@ final class TimerService {
     }
 
     private func advancePhase() {
+        let previousPhase = currentPhase
+        let sets = appSettings?.setsPerCycle ?? 4
+
         switch currentPhase {
         case .work:
-            if completedWorkSets >= Self.setsPerCycle {
+            if completedWorkSets >= sets {
                 currentPhase = .longBreak
                 completedWorkSets = 0
             } else {
@@ -211,11 +218,25 @@ final class TimerService {
             currentPhase = .work
         }
 
-        remainingSeconds = currentPhase.defaultDurationSeconds
+        remainingSeconds = appSettings?.durationSeconds(for: currentPhase) ?? currentPhase.defaultDurationSeconds
         state = .idle
         phaseStartDate = nil
         accumulatedPauseSeconds = 0
         pauseStartDate = nil
+
+        // Auto-start logic
+        let shouldAutoStart: Bool
+        switch currentPhase {
+        case .shortBreak, .longBreak:
+            shouldAutoStart = appSettings?.autoStartBreaks ?? false
+        case .work:
+            shouldAutoStart = (previousPhase == .shortBreak || previousPhase == .longBreak)
+                && (appSettings?.autoStartWork ?? false)
+        }
+
+        if shouldAutoStart {
+            start()
+        }
     }
 
     // MARK: - Notifications

@@ -3,11 +3,13 @@ import SwiftUI
 #if os(macOS)
 struct MenuBarTimerView: View {
     @Bindable var timerService: TimerService
+    var appSettings: AppSettings
     @State private var selectedTab: Tab = .timer
 
     private enum Tab: String, CaseIterable {
         case timer = "タイマー"
         case history = "履歴"
+        case settings = "設定"
     }
 
     var body: some View {
@@ -34,7 +36,8 @@ struct MenuBarTimerView: View {
                     progress: timerService.progress,
                     phase: timerService.currentPhase,
                     state: timerService.state,
-                    completedWorkSets: timerService.completedWorkSets
+                    completedWorkSets: timerService.completedWorkSets,
+                    timerFont: appSettings.timerFont
                 )
                 .frame(width: 180, height: 180)
 
@@ -51,6 +54,11 @@ struct MenuBarTimerView: View {
 
             case .history:
                 MenuBarHistoryView()
+
+            case .settings:
+                NavigationStack {
+                    SettingsView(appSettings: appSettings)
+                }
             }
         }
         .padding()
