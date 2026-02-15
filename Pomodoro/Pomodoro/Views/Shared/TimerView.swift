@@ -6,14 +6,14 @@ struct TimerView: View {
     let progress: Double
     let phase: TimerPhase
     let state: TimerState
+    let completedWorkSets: Int
 
-    private var ringColor: Color {
-        switch phase {
-        case .work: .red
-        case .shortBreak: .green
-        case .longBreak: .blue
-        }
-    }
+    @State private var pulseScale: CGFloat = 1.0
+
+    private let ringWidth: CGFloat = 10
+
+    private var accent: Color { FuturisticTheme.accentColor(for: phase) }
+    private var trimEnd: CGFloat { CGFloat(1.0 - progress) }
 
     private var displayTime: String {
         let m = remainingSeconds / 60
@@ -23,28 +23,59 @@ struct TimerView: View {
 
     var body: some View {
         ZStack {
-            // Background ring
+            // 1. 背景トラック（全周を薄く）
             Circle()
-                .stroke(ringColor.opacity(0.2), lineWidth: 12)
+                .stroke(accent.opacity(0.12), lineWidth: ringWidth)
 
-            // Progress ring
+            // 2. 残り時間アーク — 一色ベタ、時間経過で削られていく
             Circle()
-                .trim(from: 0, to: CGFloat(1.0 - progress))
-                .stroke(ringColor, style: StrokeStyle(lineWidth: 12, lineCap: .round))
+                .trim(from: 0, to: trimEnd)
+                .stroke(accent, style: StrokeStyle(lineWidth: ringWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
                 .animation(.linear(duration: 0.5), value: progress)
 
-            // Time display
-            VStack(spacing: 4) {
+            // 4. パルスリング（running時のみ）
+            if state == .running {
+                Circle()
+                    .stroke(accent.opacity(0.10), lineWidth: 1.5)
+                    .scaleEffect(pulseScale)
+                    .opacity(2.0 - Double(pulseScale))
+                    .onAppear { startPulse() }
+            }
+
+            // 数字表示
+            VStack(spacing: 2) {
                 Text(displayTime)
-                    .font(.system(size: 48, weight: .light, design: .monospaced))
+                    .font(.system(size: 44, weight: .medium, design: .rounded))
+                    .monospacedDigit()
+                    .kerning(2)
+                    .foregroundStyle(FuturisticTheme.textPrimary)
                     .contentTransition(.numericText())
 
                 Text(phase.displayName)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundStyle(accent.opacity(0.7))
+                    .textCase(.uppercase)
+                    .kerning(1.5)
             }
         }
         .padding(8)
+        .onChange(of: state) { _, newState in
+            if newState == .running {
+                startPulse()
+            }
+        }
+    }
+
+    // MARK: - Animations
+
+    private func startPulse() {
+        pulseScale = 1.0
+        withAnimation(
+            .easeOut(duration: 1.5)
+            .repeatForever(autoreverses: false)
+        ) {
+            pulseScale = 1.15
+        }
     }
 }

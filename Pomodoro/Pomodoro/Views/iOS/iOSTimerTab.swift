@@ -10,7 +10,8 @@ struct iOSTimerTab: View {
 
             SessionTitleInput(
                 title: $timerService.sessionTitle,
-                isEditable: timerService.state == .idle || timerService.state == .completed
+                isEditable: timerService.state == .idle || timerService.state == .completed,
+                phase: timerService.currentPhase
             )
             .padding(.horizontal, 32)
 
@@ -19,12 +20,14 @@ struct iOSTimerTab: View {
                 totalSeconds: timerService.totalSeconds,
                 progress: timerService.progress,
                 phase: timerService.currentPhase,
-                state: timerService.state
+                state: timerService.state,
+                completedWorkSets: timerService.completedWorkSets
             )
             .frame(width: 250, height: 250)
 
             TimerControlsView(
                 state: timerService.state,
+                phase: timerService.currentPhase,
                 currentSetDisplay: timerService.currentSetDisplay,
                 onStart: { timerService.start() },
                 onPause: { timerService.pause() },
@@ -36,6 +39,7 @@ struct iOSTimerTab: View {
             Spacer()
         }
         .navigationTitle("タイマー")
+        .background(FuturisticTheme.background)
     }
 }
 #endif
