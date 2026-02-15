@@ -6,6 +6,9 @@ struct PomodoroApp: App {
     @State private var timerService = TimerService()
     @State private var appSettings = AppSettings()
     private let notificationService = NotificationService()
+    #if os(macOS)
+    private let appBlockerService = AppBlockerService()
+    #endif
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([PomodoroSession.self])
@@ -59,5 +62,8 @@ struct PomodoroApp: App {
         let context = sharedModelContainer.mainContext
         timerService.configure(modelContext: context, notificationService: notificationService, appSettings: appSettings)
         notificationService.requestPermission()
+        #if os(macOS)
+        appBlockerService.configure(timerService: timerService, appSettings: appSettings, notificationService: notificationService)
+        #endif
     }
 }

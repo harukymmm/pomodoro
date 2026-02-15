@@ -2,14 +2,27 @@ import Foundation
 import UserNotifications
 
 @MainActor
-final class NotificationService {
+final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
     private let center = UNUserNotificationCenter.current()
     private let pendingIdentifier = "pomodoro.timer.end"
+
+    override init() {
+        super.init()
+        center.delegate = self
+    }
 
     func requestPermission() {
         Task {
             try? await center.requestAuthorization(options: [.alert, .sound, .badge])
         }
+    }
+
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound])
     }
 
     func scheduleTimerEnd(phase: TimerPhase, afterSeconds seconds: TimeInterval) {
@@ -33,6 +46,20 @@ final class NotificationService {
 
         let request = UNNotificationRequest(
             identifier: "pomodoro.phase.complete.\(UUID().uuidString)",
+            content: content,
+            trigger: nil
+        )
+        center.add(request)
+    }
+
+    func sendAppBlockedNotification(appName: String) {
+        let content = UNMutableNotificationContent()
+        content.title = "集中時間中です"
+        content.body = "\(appName) を終了しました"
+        content.sound = .default
+
+        let request = UNNotificationRequest(
+            identifier: "pomodoro.app.blocked.\(UUID().uuidString)",
             content: content,
             trigger: nil
         )

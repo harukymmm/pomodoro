@@ -55,6 +55,18 @@ final class AppSettings {
         didSet { UserDefaults.standard.set(autoStartWork, forKey: "autoStartWork") }
     }
 
+    var isAppBlockingEnabled: Bool {
+        didSet { UserDefaults.standard.set(isAppBlockingEnabled, forKey: "isAppBlockingEnabled") }
+    }
+
+    var blockedApps: [BlockedApp] {
+        didSet {
+            if let data = try? JSONEncoder().encode(blockedApps) {
+                UserDefaults.standard.set(data, forKey: "blockedApps")
+            }
+        }
+    }
+
     var timerFont: TimerFont {
         TimerFont(rawValue: timerFontId) ?? .systemRounded
     }
@@ -108,5 +120,14 @@ final class AppSettings {
 
         self.autoStartBreaks = defaults.bool(forKey: "autoStartBreaks")
         self.autoStartWork = defaults.bool(forKey: "autoStartWork")
+
+        self.isAppBlockingEnabled = defaults.bool(forKey: "isAppBlockingEnabled")
+
+        if let data = defaults.data(forKey: "blockedApps"),
+           let apps = try? JSONDecoder().decode([BlockedApp].self, from: data) {
+            self.blockedApps = apps
+        } else {
+            self.blockedApps = []
+        }
     }
 }

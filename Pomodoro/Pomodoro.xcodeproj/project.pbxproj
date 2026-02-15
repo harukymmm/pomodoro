@@ -31,6 +31,9 @@
 		A10001010000000000000016 /* FontSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001F /* FontSelectionView.swift */; };
 		A10001010000000000000017 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000020 /* SettingsView.swift */; };
 		A10001010000000000000018 /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000021 /* MacContentView.swift */; };
+		A10001010000000000000019 /* BlockedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000022 /* BlockedApp.swift */; };
+		A1000101000000000000001A /* AppBlockerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000023 /* AppBlockerService.swift */; };
+		A1000101000000000000001B /* BlockedAppsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000024 /* BlockedAppsSettingsView.swift */; };
 		A10001020000000000000001 /* PomodoroApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000000A /* PomodoroApp.swift */; };
 		A10001020000000000000002 /* TimerPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000000B /* TimerPhase.swift */; };
 		A10001020000000000000003 /* TimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000000C /* TimerState.swift */; };
@@ -55,6 +58,9 @@
 		A10001020000000000000016 /* FontSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001F /* FontSelectionView.swift */; };
 		A10001020000000000000017 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000020 /* SettingsView.swift */; };
 		A10001020000000000000018 /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000021 /* MacContentView.swift */; };
+		A10001020000000000000019 /* BlockedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000022 /* BlockedApp.swift */; };
+		A1000102000000000000001A /* AppBlockerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000023 /* AppBlockerService.swift */; };
+		A1000102000000000000001B /* BlockedAppsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000024 /* BlockedAppsSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +90,9 @@
 		A1000201000000000000001E /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		A1000201000000000000001F /* FontSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSelectionView.swift; sourceTree = "<group>"; };
 		A10002010000000000000020 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A10002010000000000000022 /* BlockedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedApp.swift; sourceTree = "<group>"; };
+		A10002010000000000000023 /* AppBlockerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBlockerService.swift; sourceTree = "<group>"; };
+		A10002010000000000000024 /* BlockedAppsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedAppsSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +157,7 @@
 				A1000201000000000000000C /* TimerState.swift */,
 				A1000201000000000000000D /* PomodoroSession.swift */,
 				A1000201000000000000001D /* TimerFont.swift */,
+				A10002010000000000000022 /* BlockedApp.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -159,6 +169,7 @@
 				A1000201000000000000000F /* NotificationService.swift */,
 				A10002010000000000000010 /* StatisticsService.swift */,
 				A1000201000000000000001E /* AppSettings.swift */,
+				A10002010000000000000023 /* AppBlockerService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -185,6 +196,7 @@
 				A1000201000000000000001B /* Theme.swift */,
 				A1000201000000000000001F /* FontSelectionView.swift */,
 				A10002010000000000000020 /* SettingsView.swift */,
+				A10002010000000000000024 /* BlockedAppsSettingsView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -337,6 +349,9 @@
 				A10001010000000000000016 /* FontSelectionView.swift in Sources */,
 				A10001010000000000000017 /* SettingsView.swift in Sources */,
 				A10001010000000000000018 /* MacContentView.swift in Sources */,
+				A10001010000000000000019 /* BlockedApp.swift in Sources */,
+				A1000101000000000000001A /* AppBlockerService.swift in Sources */,
+				A1000101000000000000001B /* BlockedAppsSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +382,9 @@
 				A10001020000000000000016 /* FontSelectionView.swift in Sources */,
 				A10001020000000000000017 /* SettingsView.swift in Sources */,
 				A10001020000000000000018 /* MacContentView.swift in Sources */,
+				A10001020000000000000019 /* BlockedApp.swift in Sources */,
+				A1000102000000000000001A /* AppBlockerService.swift in Sources */,
+				A1000102000000000000001B /* BlockedAppsSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

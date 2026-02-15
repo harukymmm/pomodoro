@@ -3,6 +3,9 @@ import SwiftUI
 struct SettingsView: View {
     @Bindable var appSettings: AppSettings
     @State private var showingFontSelection = false
+    #if os(macOS)
+    @State private var showingBlockedApps = false
+    #endif
 
     var body: some View {
         Form {
@@ -75,6 +78,42 @@ struct SettingsView: View {
                 Toggle("休憩を自動開始", isOn: $appSettings.autoStartBreaks)
                 Toggle("作業を自動開始", isOn: $appSettings.autoStartWork)
             }
+
+            #if os(macOS)
+            // MARK: - Focus Mode
+            Section("集中モード") {
+                Toggle("アプリブロッキング", isOn: $appSettings.isAppBlockingEnabled)
+
+                Button {
+                    showingBlockedApps = true
+                } label: {
+                    HStack {
+                        Text("ブロック対象アプリ")
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Text("\(appSettings.blockedApps.count)個")
+                            .foregroundStyle(.secondary)
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .sheet(isPresented: $showingBlockedApps) {
+                    NavigationStack {
+                        BlockedAppsSettingsView(appSettings: appSettings)
+                            .navigationTitle("ブロック対象アプリ")
+                            .toolbar {
+                                ToolbarItem(placement: .confirmationAction) {
+                                    Button("完了") {
+                                        showingBlockedApps = false
+                                    }
+                                }
+                            }
+                    }
+                    .frame(minWidth: 400, minHeight: 500)
+                }
+            }
+            #endif
         }
         .formStyle(.grouped)
         #if os(iOS)
