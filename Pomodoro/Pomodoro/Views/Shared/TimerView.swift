@@ -15,7 +15,7 @@ struct TimerView: View {
 
     private let ringWidth: CGFloat = 10
 
-    private var accent: Color { isInOvertime ? .orange : FuturisticTheme.accentColor(for: phase) }
+    private var accent: Color { isInOvertime ? FuturisticTheme.overtimeColor : FuturisticTheme.accentColor(for: phase) }
     private var trimEnd: CGFloat { isInOvertime ? 1.0 : CGFloat(1.0 - progress) }
 
     private var displayTime: String {
@@ -69,7 +69,7 @@ struct TimerView: View {
                 if isInOvertime {
                     Text("延長中")
                         .font(timerFont.font(size: 11, weight: .semibold))
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(accent)
                 }
             }
         }

@@ -35,7 +35,7 @@ struct SessionRowView: View {
                     .font(.body.monospacedDigit())
 
                 Image(systemName: session.isCompleted ? "checkmark.circle.fill" : "xmark.circle")
-                    .foregroundStyle(session.isCompleted ? .green : .secondary)
+                    .foregroundStyle(session.isCompleted ? FuturisticTheme.successColor : .secondary)
                     .font(.caption)
             }
         }

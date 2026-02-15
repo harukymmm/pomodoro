@@ -14,7 +14,7 @@ struct TimerControlsView: View {
     var onFinishOvertime: () -> Void = {}
 
     private var accent: Color {
-        isInOvertime ? .orange : FuturisticTheme.accentColor(for: phase)
+        isInOvertime ? FuturisticTheme.overtimeColor : FuturisticTheme.accentColor(for: phase)
     }
 
     var body: some View {
@@ -41,12 +41,12 @@ struct TimerControlsView: View {
                         Button(action: onFinishOvertime) {
                             Label("終了", systemImage: "stop.fill")
                         }
-                        .buttonStyle(FuturisticPrimaryButtonStyle(accent: .orange))
+                        .buttonStyle(FuturisticPrimaryButtonStyle(accent: accent))
 
                         Button(action: onPause) {
                             Image(systemName: "pause.fill")
                         }
-                        .buttonStyle(FuturisticIconButtonStyle(accent: .orange))
+                        .buttonStyle(FuturisticIconButtonStyle(accent: accent))
                         .help("一時停止")
                     } else {
                         Button(action: onPause) {
@@ -71,13 +71,13 @@ struct TimerControlsView: View {
                     Button(action: onResume) {
                         Label("再開", systemImage: "play.fill")
                     }
-                    .buttonStyle(FuturisticPrimaryButtonStyle(accent: .green))
+                    .buttonStyle(FuturisticPrimaryButtonStyle(accent: accent))
 
                     if isInOvertime {
                         Button(action: onFinishOvertime) {
                             Image(systemName: "stop.fill")
                         }
-                        .buttonStyle(FuturisticIconButtonStyle(accent: .orange))
+                        .buttonStyle(FuturisticIconButtonStyle(accent: accent))
                         .help("終了")
                     } else {
                         Button(action: onSkip) {

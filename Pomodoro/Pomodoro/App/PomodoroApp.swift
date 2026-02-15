@@ -19,6 +19,15 @@ struct PomodoroApp: App {
 
     var body: some Scene {
         #if os(macOS)
+        WindowGroup {
+            MacContentView(timerService: timerService, appSettings: appSettings)
+                .modelContainer(sharedModelContainer)
+                .onAppear {
+                    setupServices()
+                }
+        }
+        .windowResizability(.contentSize)
+
         MenuBarExtra {
             MenuBarTimerView(timerService: timerService, appSettings: appSettings)
                 .modelContainer(sharedModelContainer)
@@ -26,7 +35,11 @@ struct PomodoroApp: App {
                     setupServices()
                 }
         } label: {
-            Text(timerService.menuBarText)
+            if let text = timerService.menuBarTimerText {
+                Text(text)
+            } else {
+                Image("MenuBarIcon")
+            }
         }
         .menuBarExtraStyle(.window)
         #endif

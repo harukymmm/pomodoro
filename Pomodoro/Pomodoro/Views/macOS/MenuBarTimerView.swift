@@ -61,9 +61,7 @@ struct MenuBarTimerView: View {
                 MenuBarHistoryView(appSettings: appSettings)
 
             case .settings:
-                NavigationStack {
-                    SettingsView(appSettings: appSettings)
-                }
+                SettingsView(appSettings: appSettings)
             }
         }
         .padding()

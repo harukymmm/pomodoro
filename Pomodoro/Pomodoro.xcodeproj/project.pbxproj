@@ -30,6 +30,7 @@
 		A10001010000000000000015 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001E /* AppSettings.swift */; };
 		A10001010000000000000016 /* FontSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001F /* FontSelectionView.swift */; };
 		A10001010000000000000017 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000020 /* SettingsView.swift */; };
+		A10001010000000000000018 /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000021 /* MacContentView.swift */; };
 		A10001020000000000000001 /* PomodoroApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000000A /* PomodoroApp.swift */; };
 		A10001020000000000000002 /* TimerPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000000B /* TimerPhase.swift */; };
 		A10001020000000000000003 /* TimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000000C /* TimerState.swift */; };
@@ -53,6 +54,7 @@
 		A10001020000000000000015 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001E /* AppSettings.swift */; };
 		A10001020000000000000016 /* FontSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000201000000000000001F /* FontSelectionView.swift */; };
 		A10001020000000000000017 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000020 /* SettingsView.swift */; };
+		A10001020000000000000018 /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000021 /* MacContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +79,7 @@
 		A1000201000000000000001A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1000201000000000000001B /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		A1000201000000000000001C /* MenuBarHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarHistoryView.swift; sourceTree = "<group>"; };
+		A10002010000000000000021 /* MacContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacContentView.swift; sourceTree = "<group>"; };
 		A1000201000000000000001D /* TimerFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerFont.swift; sourceTree = "<group>"; };
 		A1000201000000000000001E /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		A1000201000000000000001F /* FontSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSelectionView.swift; sourceTree = "<group>"; };
@@ -191,6 +194,7 @@
 			children = (
 				A10002010000000000000017 /* MenuBarTimerView.swift */,
 				A1000201000000000000001C /* MenuBarHistoryView.swift */,
+				A10002010000000000000021 /* MacContentView.swift */,
 			);
 			path = macOS;
 			sourceTree = "<group>";
@@ -332,6 +336,7 @@
 				A10001010000000000000015 /* AppSettings.swift in Sources */,
 				A10001010000000000000016 /* FontSelectionView.swift in Sources */,
 				A10001010000000000000017 /* SettingsView.swift in Sources */,
+				A10001010000000000000018 /* MacContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,6 +366,7 @@
 				A10001020000000000000015 /* AppSettings.swift in Sources */,
 				A10001020000000000000016 /* FontSelectionView.swift in Sources */,
 				A10001020000000000000017 /* SettingsView.swift in Sources */,
+				A10001020000000000000018 /* MacContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,7 +503,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
@@ -524,7 +530,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;

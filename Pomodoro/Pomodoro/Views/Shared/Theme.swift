@@ -7,11 +7,14 @@ enum FuturisticTheme {
 
     static func accentColor(for phase: TimerPhase) -> Color {
         switch phase {
-        case .work: Color(red: 0.0, green: 0.55, blue: 0.7)
-        case .shortBreak: Color(red: 0.0, green: 0.75, blue: 0.55)
-        case .longBreak: Color(red: 0.55, green: 0.4, blue: 0.9)
+        case .work: Color(red: 0.83, green: 0.36, blue: 0.33)
+        case .shortBreak: Color(red: 0.33, green: 0.72, blue: 0.52)
+        case .longBreak: Color(red: 0.40, green: 0.56, blue: 0.85)
         }
     }
+
+    static let overtimeColor = Color(red: 0.88, green: 0.62, blue: 0.30)
+    static let successColor = Color(red: 0.33, green: 0.72, blue: 0.52)
 
     static let textPrimary = Color.primary
     static let textSecondary = Color.secondary

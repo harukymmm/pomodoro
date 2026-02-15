@@ -44,9 +44,9 @@ final class TimerService {
         return String(format: "%d:%02d", m, s)
     }
 
-    var menuBarText: String {
+    var menuBarTimerText: String? {
         switch state {
-        case .idle: return "🍅"
+        case .idle, .completed: return nil
         case .running, .paused:
             if isInOvertime {
                 let m = overtimeSeconds / 60
@@ -56,7 +56,6 @@ final class TimerService {
             let m = remainingSeconds / 60
             let s = remainingSeconds % 60
             return String(format: "%02d:%02d", m, s)
-        case .completed: return "🍅✓"
         }
     }
 
@@ -88,7 +87,11 @@ final class TimerService {
 
     // MARK: - Setup
 
+    private var isConfigured = false
+
     func configure(modelContext: ModelContext, notificationService: NotificationService, appSettings: AppSettings) {
+        guard !isConfigured else { return }
+        isConfigured = true
         self.modelContext = modelContext
         self.notificationService = notificationService
         self.appSettings = appSettings

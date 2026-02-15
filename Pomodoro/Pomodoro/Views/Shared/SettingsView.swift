@@ -2,15 +2,12 @@ import SwiftUI
 
 struct SettingsView: View {
     @Bindable var appSettings: AppSettings
-    #if os(iOS)
     @State private var showingFontSelection = false
-    #endif
 
     var body: some View {
         Form {
             // MARK: - Display
             Section("表示") {
-                #if os(iOS)
                 Button {
                     showingFontSelection = true
                 } label: {
@@ -37,18 +34,6 @@ struct SettingsView: View {
                             }
                     }
                 }
-                #else
-                NavigationLink {
-                    FontSelectionView(appSettings: appSettings)
-                } label: {
-                    HStack {
-                        Text("フォント")
-                        Spacer()
-                        Text(appSettings.timerFont.displayName)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                #endif
 
                 HStack {
                     Spacer()
@@ -91,9 +76,10 @@ struct SettingsView: View {
                 Toggle("作業を自動開始", isOn: $appSettings.autoStartWork)
             }
         }
-        .navigationTitle("設定")
-        #if os(macOS)
         .formStyle(.grouped)
+        #if os(iOS)
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
         #endif
     }
 }
