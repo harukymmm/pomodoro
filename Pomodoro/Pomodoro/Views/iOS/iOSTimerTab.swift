@@ -11,7 +11,7 @@ struct iOSTimerTab: View {
 
             SessionTitleInput(
                 title: $timerService.sessionTitle,
-                isEditable: timerService.state == .idle || timerService.state == .completed,
+                isEditable: timerService.state == .idle || timerService.state == .paused || timerService.state == .completed,
                 phase: timerService.currentPhase
             )
             .padding(.horizontal, 32)

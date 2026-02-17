@@ -62,7 +62,7 @@ struct TimerView: View {
 
                 Text(phase.displayName)
                     .font(timerFont.font(size: 12, weight: .medium))
-                    .foregroundStyle(accent.opacity(0.7))
+                    .foregroundStyle(FuturisticTheme.textPrimary)
                     .textCase(.uppercase)
                     .kerning(1.5)
 

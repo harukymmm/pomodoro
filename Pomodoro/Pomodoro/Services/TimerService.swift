@@ -87,11 +87,7 @@ final class TimerService {
 
     // MARK: - Setup
 
-    private var isConfigured = false
-
     func configure(modelContext: ModelContext, notificationService: NotificationService, appSettings: AppSettings) {
-        guard !isConfigured else { return }
-        isConfigured = true
         self.modelContext = modelContext
         self.notificationService = notificationService
         self.appSettings = appSettings
@@ -116,7 +112,7 @@ final class TimerService {
                 durationSeconds: duration
             )
             modelContext?.insert(session)
-            try? modelContext?.save()
+            saveContext()
             currentSession = session
         }
 
@@ -151,7 +147,7 @@ final class TimerService {
             } else {
                 session.cancel(elapsedSeconds: elapsed)
             }
-            try? modelContext?.save()
+            saveContext()
         }
 
         timerCancellable?.cancel()
@@ -177,7 +173,7 @@ final class TimerService {
             } else {
                 session.cancel(elapsedSeconds: elapsed)
             }
-            try? modelContext?.save()
+            saveContext()
             currentSession = nil
         }
 
@@ -248,7 +244,7 @@ final class TimerService {
             todayCompletedSets += 1
             if let session = currentSession {
                 session.complete(actualSeconds: totalSeconds)
-                try? modelContext?.save()
+                saveContext()
                 currentSession = nil
             }
         }
@@ -317,7 +313,7 @@ final class TimerService {
                 ? totalSeconds + (overtimeMinutes * 60)
                 : totalSeconds
             session.complete(actualSeconds: actualSeconds)
-            try? modelContext?.save()
+            saveContext()
             currentSession = nil
         }
         resetOvertimeState()
@@ -328,6 +324,20 @@ final class TimerService {
         isInOvertime = false
         overtimeSeconds = 0
         showOvertimeChoice = false
+    }
+
+    // MARK: - Persistence
+
+    private func saveContext() {
+        guard let context = modelContext else {
+            assertionFailure("modelContext is nil — configure() が呼ばれていません")
+            return
+        }
+        do {
+            try context.save()
+        } catch {
+            print("[PomodoroSession] 保存失敗: \(error)")
+        }
     }
 
     // MARK: - Notifications

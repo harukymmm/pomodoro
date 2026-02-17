@@ -20,14 +20,20 @@ struct PomodoroApp: App {
         }
     }()
 
+    init() {
+        let context = sharedModelContainer.mainContext
+        timerService.configure(modelContext: context, notificationService: notificationService, appSettings: appSettings)
+        notificationService.requestPermission()
+        #if os(macOS)
+        appBlockerService.configure(timerService: timerService, appSettings: appSettings, notificationService: notificationService)
+        #endif
+    }
+
     var body: some Scene {
         #if os(macOS)
         WindowGroup {
             MacContentView(timerService: timerService, appSettings: appSettings)
                 .modelContainer(sharedModelContainer)
-                .onAppear {
-                    setupServices()
-                }
         }
         .windowResizability(.contentSize)
 
@@ -35,7 +41,9 @@ struct PomodoroApp: App {
             MenuBarTimerView(timerService: timerService, appSettings: appSettings)
                 .modelContainer(sharedModelContainer)
                 .onAppear {
-                    setupServices()
+                    for window in NSApplication.shared.windows where window.canBecomeMain {
+                        window.close()
+                    }
                 }
         } label: {
             if let text = timerService.menuBarTimerText {
@@ -51,19 +59,8 @@ struct PomodoroApp: App {
         WindowGroup {
             iOSContentView(timerService: timerService, appSettings: appSettings)
                 .modelContainer(sharedModelContainer)
-                .onAppear {
-                    setupServices()
-                }
         }
         #endif
     }
 
-    private func setupServices() {
-        let context = sharedModelContainer.mainContext
-        timerService.configure(modelContext: context, notificationService: notificationService, appSettings: appSettings)
-        notificationService.requestPermission()
-        #if os(macOS)
-        appBlockerService.configure(timerService: timerService, appSettings: appSettings, notificationService: notificationService)
-        #endif
-    }
 }
