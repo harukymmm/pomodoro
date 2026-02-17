@@ -111,8 +111,6 @@ final class TimerService {
                 phase: currentPhase,
                 durationSeconds: duration
             )
-            modelContext?.insert(session)
-            saveContext()
             currentSession = session
         }
 
@@ -142,12 +140,12 @@ final class TimerService {
     func reset() {
         let elapsed = elapsedSeconds()
         if let session = currentSession {
-            if elapsed < 60 && !isInOvertime {
-                modelContext?.delete(session)
-            } else {
+            if elapsed >= 60 || isInOvertime {
+                modelContext?.insert(session)
                 session.cancel(elapsedSeconds: elapsed)
+                saveContext()
             }
-            saveContext()
+            currentSession = nil
         }
 
         timerCancellable?.cancel()
@@ -168,12 +166,11 @@ final class TimerService {
         let elapsed = elapsedSeconds()
 
         if currentPhase == .work, let session = currentSession {
-            if elapsed < 60 && !isInOvertime {
-                modelContext?.delete(session)
-            } else {
+            if elapsed >= 60 || isInOvertime {
+                modelContext?.insert(session)
                 session.cancel(elapsedSeconds: elapsed)
+                saveContext()
             }
-            saveContext()
             currentSession = nil
         }
 
@@ -243,6 +240,7 @@ final class TimerService {
             completedWorkSets += 1
             todayCompletedSets += 1
             if let session = currentSession {
+                modelContext?.insert(session)
                 session.complete(actualSeconds: totalSeconds)
                 saveContext()
                 currentSession = nil
@@ -312,6 +310,7 @@ final class TimerService {
             let actualSeconds = includeOvertime
                 ? totalSeconds + (overtimeMinutes * 60)
                 : totalSeconds
+            modelContext?.insert(session)
             session.complete(actualSeconds: actualSeconds)
             saveContext()
             currentSession = nil

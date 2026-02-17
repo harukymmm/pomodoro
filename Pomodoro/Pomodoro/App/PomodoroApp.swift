@@ -27,6 +27,20 @@ struct PomodoroApp: App {
         #if os(macOS)
         appBlockerService.configure(timerService: timerService, appSettings: appSettings, notificationService: notificationService)
         #endif
+        cleanupOrphanedSessions(context: context)
+    }
+
+    private func cleanupOrphanedSessions(context: ModelContext) {
+        let orphaned = try? context.fetch(
+            FetchDescriptor<PomodoroSession>(
+                predicate: #Predicate { $0.completedAt == nil }
+            )
+        )
+        guard let orphaned, !orphaned.isEmpty else { return }
+        for session in orphaned {
+            context.delete(session)
+        }
+        try? context.save()
     }
 
     var body: some Scene {
