@@ -26,7 +26,7 @@ struct MenuBarTimerView: View {
             case .timer:
                 SessionTitleInput(
                     title: $timerService.sessionTitle,
-                    isEditable: timerService.state == .idle || timerService.state == .paused || timerService.state == .completed,
+                    isEditable: timerService.state != .running,
                     phase: timerService.currentPhase
                 )
 

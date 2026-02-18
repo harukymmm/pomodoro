@@ -240,7 +240,7 @@ final class TimerService {
             completedWorkSets += 1
             todayCompletedSets += 1
             if let session = currentSession {
-                modelContext?.insert(session)
+                session.title = sessionTitle.isEmpty ? "無題の作業" : sessionTitle
                 session.complete(actualSeconds: totalSeconds)
                 saveContext()
                 currentSession = nil
@@ -307,6 +307,7 @@ final class TimerService {
         completedWorkSets += 1
         todayCompletedSets += 1
         if let session = currentSession {
+            session.title = sessionTitle.isEmpty ? "無題の作業" : sessionTitle
             let actualSeconds = includeOvertime
                 ? totalSeconds + (overtimeMinutes * 60)
                 : totalSeconds
