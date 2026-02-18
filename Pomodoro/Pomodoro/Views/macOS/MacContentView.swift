@@ -1,7 +1,6 @@
 import SwiftUI
-import AppKit
-
 #if os(macOS)
+import AppKit
 
 // MARK: - Transparent Window Background
 

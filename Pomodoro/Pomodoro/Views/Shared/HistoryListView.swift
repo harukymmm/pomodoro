@@ -49,6 +49,14 @@ struct HistoryListView: View {
                                 } else {
                                     Text("合計 \(day.totalMinutes)分 (\(completedSets)セット)")
                                 }
+
+                                Button {
+                                    let text = StatisticsService.formatDailySummary(date: day.date, sessions: day.sessions)
+                                    StatisticsService.copyToClipboard(text)
+                                } label: {
+                                    Image(systemName: "doc.on.doc")
+                                }
+                                .buttonStyle(.borderless)
                             }
                         }
                     }

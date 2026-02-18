@@ -91,6 +91,30 @@ final class TimerService {
         self.modelContext = modelContext
         self.notificationService = notificationService
         self.appSettings = appSettings
+
+        restoreTodayCompletedSets()
+    }
+
+    private func restoreTodayCompletedSets() {
+        guard let modelContext else { return }
+        let today = Calendar.current.startOfDay(for: .now)
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+
+        let descriptor = FetchDescriptor<PomodoroSession>(
+            predicate: #Predicate<PomodoroSession> { session in
+                session.phaseRawValue == "work" &&
+                session.isCompleted &&
+                session.startedAt >= today &&
+                session.startedAt < tomorrow
+            }
+        )
+
+        do {
+            let sessions = try modelContext.fetch(descriptor)
+            todayCompletedSets = sessions.count
+        } catch {
+            todayCompletedSets = 0
+        }
     }
 
     // MARK: - Actions
@@ -140,11 +164,13 @@ final class TimerService {
     func reset() {
         let elapsed = elapsedSeconds()
         if let session = currentSession {
-            if elapsed >= 60 || isInOvertime {
-                modelContext?.insert(session)
+            if elapsed < 60 && !isInOvertime {
+                modelContext?.delete(session)
+            } else {
+                session.title = sessionTitle.isEmpty ? "無題の作業" : sessionTitle
                 session.cancel(elapsedSeconds: elapsed)
-                saveContext()
             }
+            saveContext()
             currentSession = nil
         }
 
@@ -166,11 +192,13 @@ final class TimerService {
         let elapsed = elapsedSeconds()
 
         if currentPhase == .work, let session = currentSession {
-            if elapsed >= 60 || isInOvertime {
-                modelContext?.insert(session)
+            if elapsed < 60 && !isInOvertime {
+                modelContext?.delete(session)
+            } else {
+                session.title = sessionTitle.isEmpty ? "無題の作業" : sessionTitle
                 session.cancel(elapsedSeconds: elapsed)
-                saveContext()
             }
+            saveContext()
             currentSession = nil
         }
 

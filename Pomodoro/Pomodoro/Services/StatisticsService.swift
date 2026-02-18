@@ -1,5 +1,10 @@
 import Foundation
 import SwiftData
+#if os(macOS)
+import AppKit
+#elseif os(iOS)
+import UIKit
+#endif
 
 struct DailyStat: Identifiable {
     var id: Date { date }
@@ -46,5 +51,43 @@ struct StatisticsService {
             let totalMinutes = daySessions.compactMap(\.actualDurationSeconds).reduce(0, +) / 60
             return DailyStat(date: date, totalMinutes: totalMinutes, sessionCount: daySessions.count)
         }.reversed()
+    }
+
+    static func formatDailySummary(date: Date, sessions: [PomodoroSession]) -> String {
+        let workSessions = sessions
+            .filter { $0.phaseRawValue == TimerPhase.work.rawValue }
+            .sorted { $0.startedAt < $1.startedAt }
+
+        let completedCount = workSessions.filter(\.isCompleted).count
+        let totalMinutes = workSessions
+            .compactMap(\.actualDurationSeconds)
+            .reduce(0, +) / 60
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ja_JP")
+        dateFormatter.dateStyle = .long
+        let dateString = dateFormatter.string(from: date)
+
+        var lines: [String] = []
+        lines.append("\(dateString)の成果")
+        lines.append("合計: \(completedCount)セット、\(totalMinutes)分")
+        lines.append("")
+
+        for (index, session) in workSessions.enumerated() {
+            let minutes = (session.actualDurationSeconds ?? 0) / 60
+            let title = session.title.isEmpty ? "無題" : session.title
+            lines.append("\(index + 1). \(title) \(minutes)分")
+        }
+
+        return lines.joined(separator: "\n")
+    }
+
+    static func copyToClipboard(_ text: String) {
+        #if os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #elseif os(iOS)
+        UIPasteboard.general.string = text
+        #endif
     }
 }

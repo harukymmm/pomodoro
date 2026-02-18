@@ -6,10 +6,9 @@ struct SessionRowView: View {
     private var durationText: String {
         if let actual = session.actualDurationSeconds {
             let m = actual / 60
-            let s = actual % 60
-            return String(format: "%d:%02d", m, s)
+            return "\(m)分"
         }
-        return "--:--"
+        return "--分"
     }
 
     private var dateText: String {

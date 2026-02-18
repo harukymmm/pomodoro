@@ -46,6 +46,15 @@ struct MenuBarHistoryView: View {
                                 Text("合計 \(day.totalMinutes)分 (\(completedSets)セット)")
                                     .font(.caption)
                             }
+
+                            Button {
+                                let text = StatisticsService.formatDailySummary(date: day.date, sessions: day.sessions)
+                                StatisticsService.copyToClipboard(text)
+                            } label: {
+                                Image(systemName: "doc.on.doc")
+                                    .font(.caption)
+                            }
+                            .buttonStyle(.borderless)
                         }
                         .foregroundStyle(.secondary)
                         .padding(.horizontal)
