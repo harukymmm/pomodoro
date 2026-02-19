@@ -1,6 +1,9 @@
 import Foundation
 import Combine
 import SwiftData
+#if os(iOS)
+import UIKit
+#endif
 
 @MainActor
 @Observable
@@ -84,6 +87,8 @@ final class TimerService {
     private var currentSession: PomodoroSession?
     private var notificationService: NotificationService?
     private var appSettings: AppSettings?
+    private var lastCompletedDate: Date?
+    private var dayChangeObserver: Any?
 
     // MARK: - Setup
 
@@ -93,11 +98,45 @@ final class TimerService {
         self.appSettings = appSettings
 
         restoreTodayCompletedSets()
+        setupDayChangeObserver()
+    }
+
+    private func setupDayChangeObserver() {
+        #if os(macOS)
+        dayChangeObserver = NotificationCenter.default.addObserver(
+            forName: .NSCalendarDayChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.handleDayChange()
+            }
+        }
+        #elseif os(iOS)
+        dayChangeObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.significantTimeChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.handleDayChange()
+            }
+        }
+        #endif
+    }
+
+    private func handleDayChange() {
+        let today = Calendar.current.startOfDay(for: .now)
+        if let lastDate = lastCompletedDate, lastDate != today {
+            todayCompletedSets = 0
+            lastCompletedDate = today
+        }
     }
 
     private func restoreTodayCompletedSets() {
         guard let modelContext else { return }
         let today = Calendar.current.startOfDay(for: .now)
+        lastCompletedDate = today
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
 
         let descriptor = FetchDescriptor<PomodoroSession>(
@@ -115,6 +154,14 @@ final class TimerService {
         } catch {
             todayCompletedSets = 0
         }
+    }
+
+    private func checkAndResetIfNewDay() {
+        let today = Calendar.current.startOfDay(for: .now)
+        if let lastDate = lastCompletedDate, lastDate != today {
+            todayCompletedSets = 0
+        }
+        lastCompletedDate = today
     }
 
     // MARK: - Actions
@@ -265,6 +312,7 @@ final class TimerService {
         }
 
         if currentPhase == .work {
+            checkAndResetIfNewDay()
             completedWorkSets += 1
             todayCompletedSets += 1
             if let session = currentSession {
@@ -332,6 +380,7 @@ final class TimerService {
     }
 
     private func recordSession(includeOvertime: Bool) {
+        checkAndResetIfNewDay()
         completedWorkSets += 1
         todayCompletedSets += 1
         if let session = currentSession {
